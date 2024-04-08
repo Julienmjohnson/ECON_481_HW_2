@@ -7,9 +7,12 @@ def github() -> str:
     return "https://github.com/Julienmjohnson/ECON_481_HW_2/blob/main/HW2.py"
 
 
-#Exercise 1
+
 
 import numpy as np
+import scipy as sp
+
+#Exercise 1
 
 def simulate_data(seed: int=481) -> tuple:
     """
@@ -24,3 +27,26 @@ def simulate_data(seed: int=481) -> tuple:
     Y_summed = np.sum(Y_unsummed, axis = 1).reshape((1000,1))
 
     return (Y_summed,X)
+
+#Exercise 2
+
+def likelihood_fun(beta: np.array, y: np.array, X:np.array) -> float:
+    y_pred = np.sum(np.hstack((np.ones(X.shape[0]).reshape(-1,1), X)) * beta, axis = 1).reshape((1000,1))
+    
+    likelihood = -0.5 * np.sum(np.log(2*np.pi) + np.square(y - y_pred))
+    
+    return -likelihood
+
+def estimate_mle(y: np.array, X: np.array) -> np.array:
+    """
+    Returns an array of the MLE estimators for a data set
+    """
+
+    results = sp.optimize.minimize(
+    fun=likelihood_fun, # the objective function
+    x0= np.array([0.,1.,1.,1.]), # starting guess for coefficients
+    args=(y,X), 
+    method = 'Nelder-Mead' 
+    )
+    
+    return results.x.reshape((4,1))    
