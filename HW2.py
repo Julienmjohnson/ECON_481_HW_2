@@ -36,7 +36,7 @@ def likelihood_fun(beta: np.array, y: np.array, X:np.array) -> float:
     """
     y_pred = np.sum(np.hstack((np.ones(X.shape[0]).reshape(-1,1), X)) * beta, axis = 1).reshape((1000,1))
     
-    likelihood = -0.5 * np.sum(np.log(2*np.pi) + np.square(y - y_pred))
+    likelihood = -0.5 * np.sum(np.log(2*np.pi) + np.square(y - y_pred)) #Sum of the log probability density function of the standard normal curve.
     
     return -likelihood
 
@@ -59,9 +59,9 @@ def OLS_error_fun(beta: np.array, y: np.array, X:np.array) -> float:
     """
     Returns the square of the error term which is the difference between actual results y and the observation X with their coefficient estimations beta.
     """
-    error = y - np.matmul(np.hstack((np.ones(X.shape[0]).reshape(-1,1), X)),beta.reshape(4,1))
+    error = y - np.matmul(np.hstack((np.ones(X.shape[0]).reshape(-1,1), X)),beta.reshape(4,1)) #e = y - X(beta)
    
-    return np.dot(error.T,error)[0][0]
+    return np.dot(error.T,error)[0][0] #e^Te, function to minimize
 
 def estimate_ols(y: np.array, X: np.array) -> np.array:
     """
@@ -70,8 +70,8 @@ def estimate_ols(y: np.array, X: np.array) -> np.array:
     results = sp.optimize.minimize(
     fun=OLS_error_fun, # the objective function
     x0= np.array([0.,1.,1.,1.]), # starting guess
-    args=(y,X), # additional parameters passed to neg_ll
-    method = 'Nelder-Mead' # optionally pick an algorithm
+    args=(y,X),
+    method = 'Nelder-Mead' 
     )
 
     return results.x.reshape((4,1))
